@@ -27,6 +27,7 @@ class PromptVersion(Base):
 
     temperature = Column(String, nullable=True)
     max_tokens = Column(Integer, nullable=True)
+    few_shot_examples = Column(JSON, nullable=True)
 
     commit_message = Column(String, nullable=True)
 
@@ -40,6 +41,7 @@ class PromptAudit(Base):
 
     old_version_id = Column(Integer, nullable=True)
     new_version_id = Column(Integer, nullable=False)
+    actor = Column(String, nullable=True)
 
     changed_at = Column(DateTime(timezone=True), server_default=func.now())
 
@@ -56,8 +58,12 @@ class Experiment(Base):
 
     primary_metric = Column(String, nullable=False)  # e.g., "latency", "quality"
     sample_size = Column(Integer, nullable=True)
+    owner = Column(String, nullable=True)
 
     status = Column(String, default="draft")  # draft, running, completed, cancelled
+
+    winner = Column(String, nullable=True)          # winning variant name once declared
+    winner_promoted = Column(Integer, default=0)    # 1 if winner auto-promoted to active_version
 
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
@@ -92,5 +98,13 @@ class ExperimentRun(Base):
     user_id = Column(String, nullable=False)
 
     variant = Column(String, nullable=False)
+
+    # Metrics captured at serve time — needed for Phase 3 statistical analysis
+    latency_ms = Column(Integer, nullable=True)
+    input_tokens = Column(Integer, nullable=True)
+    output_tokens = Column(Integer, nullable=True)
+    is_error = Column(Integer, default=0)  # 0 = success, 1 = error
+    response_text = Column(Text, nullable=True)
+    quality_score = Column(Integer, nullable=True)  # LLM-as-judge score 1–5
 
     created_at = Column(DateTime(timezone=True), server_default=func.now())
