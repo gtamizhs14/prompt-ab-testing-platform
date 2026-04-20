@@ -3,20 +3,12 @@ from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 from typing import Optional
-from app.db.database import SessionLocal
+from app.db.database import get_db
 from app.db import models
 from app.schemas import prompt as schemas
 from app.services import llm_service
 
 router = APIRouter()
-
-
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
 
 
 @router.post("/prompts")

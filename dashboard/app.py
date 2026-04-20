@@ -9,7 +9,8 @@ import streamlit as st
 import requests
 import pandas as pd
 
-API = "http://localhost:8000"
+import os
+API = os.getenv("API_URL", "http://localhost:8000")
 
 st.set_page_config(page_title="Prompt A/B Platform", layout="wide")
 st.title("Prompt A/B Testing Platform")

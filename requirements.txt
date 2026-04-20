@@ -6,3 +6,6 @@ python-dotenv
 pydantic
 httpx
 scipy
+streamlit
+pytest
+pytest-asyncio
